@@ -164,11 +164,10 @@ local function main()
             if music.getItemDetail(1) then
                 music.pushItems(peripheral.getName(disks), 1)
             end
-
-            sleep(1)
             
             idx = idx + 1
             slot = diskSlots[idx]
+            sleep(1)
         end
 
         ::continue_loop::
