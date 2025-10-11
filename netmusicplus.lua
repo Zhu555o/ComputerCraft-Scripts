@@ -165,6 +165,8 @@ local function main()
                 music.pushItems(peripheral.getName(disks), 1)
             end
 
+            sleep(1)
+            
             idx = idx + 1
             slot = diskSlots[idx]
         end
