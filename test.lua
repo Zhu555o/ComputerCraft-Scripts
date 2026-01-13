@@ -1,4 +1,4 @@
--- netmusicplus.lua (Modified for UTF-8 Support using utf8display)
+-- netmusicplus.lua (Corrected for UTF-8 Support using utf8display)
 -- 作者: Zhu555o (原始), Assistant (修改以支持 UTF-8)
 -- 依赖: utf8display library (https://git.liulikeji.cn/xingluo/ComputerCraft-Utf8/src/branch/main/utf8display)
 
@@ -162,13 +162,14 @@ end
 -- 搜索音乐
 local function searchMusic(keyword)
     term.clear()
-    utf8display.print({success=true, startX=1, startY=1, endX=1, endY=1, charCount=0, fontHeight=utf8display.getFontHeight()}, "搜索中: " .. keyword, COLORS.text_info, COLORS.bg_default)
+    -- 移除对 getFontHeight 的调用，直接使用 utf8display.print
+    utf8display.print("搜索中: " .. keyword, COLORS.text_info, COLORS.bg_default)
 
     local searchUrl = "https://music-api-by-zhu555o.vercel.app/search?keywords=" .. textutils.urlEncode(keyword)
     local searchData = getJsonFromUrl(searchUrl)
 
     if not searchData or not searchData.result or not searchData.result.songs then
-        utf8display.print({success=true, startX=1, startY=2, endX=1, endY=2, charCount=0, fontHeight=utf8display.getFontHeight()}, "搜索失败或无结果。", COLORS.text_error, COLORS.bg_default)
+        utf8display.print("搜索失败或无结果。", COLORS.text_error, COLORS.bg_default)
         sleep(2)
         return
     end
@@ -201,22 +202,22 @@ local function renderUI()
     term.clear()
 
     -- 标题
-    utf8display.write({success=true, startX=1, startY=1, endX=1, endY=1, charCount=0, fontHeight=utf8display.getFontHeight()}, "=== 网易云音乐播放器 Plus ===", COLORS.text_title, COLORS.bg_default)
+    utf8display.write("=== 网易云音乐播放器 Plus ===", COLORS.text_title, COLORS.bg_default)
     term.setCursorPos(1, 3)
 
     -- 当前播放信息
     if currentMusic and isValidMusic(currentMusic) then
-        utf8display.print({success=true, startX=1, startY=3, endX=1, endY=3, charCount=0, fontHeight=utf8display.getFontHeight()}, "正在播放:", COLORS.text_info, COLORS.bg_default)
-        utf8display.print({success=true, startX=1, startY=4, endX=1, endY=4, charCount=0, fontHeight=utf8display.getFontHeight()}, "歌曲: " .. currentMusic.name, COLORS.text_default, COLORS.bg_default)
-        utf8display.print({success=true, startX=1, startY=5, endX=1, endY=5, charCount=0, fontHeight=utf8display.getFontHeight()}, "艺术家: " .. currentMusic.artists, COLORS.text_default, COLORS.bg_default)
-        utf8display.print({success=true, startX=1, startY=6, endX=1, endY=6, charCount=0, fontHeight=utf8display.getFontHeight()}, "专辑: " .. currentMusic.album, COLORS.text_default, COLORS.bg_default)
-        utf8display.print({success=true, startX=1, startY=7, endX=1, endY=7, charCount=0, fontHeight=utf8display.getFontHeight()}, "状态: " .. (isPlaying and "播放中" or "已暂停"), COLORS.text_highlight, COLORS.bg_default)
+        utf8display.print("正在播放:", COLORS.text_info, COLORS.bg_default)
+        utf8display.print("歌曲: " .. currentMusic.name, COLORS.text_default, COLORS.bg_default)
+        utf8display.print("艺术家: " .. currentMusic.artists, COLORS.text_default, COLORS.bg_default)
+        utf8display.print("专辑: " .. currentMusic.album, COLORS.text_default, COLORS.bg_default)
+        utf8display.print("状态: " .. (isPlaying and "播放中" or "已暂停"), COLORS.text_highlight, COLORS.bg_default)
     else
-        utf8display.print({success=true, startX=1, startY=3, endX=1, endY=3, charCount=0, fontHeight=utf8display.getFontHeight()}, "当前无音乐。", COLORS.text_error, COLORS.bg_default)
+        utf8display.print("当前无音乐。", COLORS.text_error, COLORS.bg_default)
     end
 
     term.setCursorPos(1, 9)
-    utf8display.print({success=true, startX=1, startY=9, endX=1, endY=9, charCount=0, fontHeight=utf8display.getFontHeight()}, "播放列表 (" .. totalMusic .. " 首):", COLORS.text_info, COLORS.bg_default)
+    utf8display.print("播放列表 (" .. totalMusic .. " 首):", COLORS.text_info, COLORS.bg_default)
 
     -- 播放列表预览 (最多显示 5 首)
     local listStartY = 10
@@ -239,17 +240,17 @@ local function renderUI()
             end
             -- 构建显示行
             local displayLine = prefix .. idx .. ". " .. item.name .. " - " .. item.artists
-            utf8display.print({success=true, startX=1, startY=listStartY + i - 1, endX=1, endY=listStartY + i - 1, charCount=0, fontHeight=utf8display.getFontHeight()}, displayLine, COLORS.text_default, bgColor)
+            utf8display.print(displayLine, COLORS.text_default, bgColor)
         end
     end
 
     -- 控制说明和状态
     local controlY = listStartY + maxListItems + 2
-    utf8display.print({success=true, startX=1, startY=controlY, endX=1, endY=controlY, charCount=0, fontHeight=utf8display.getFontHeight()}, "控制: [N]ext, [P]rev, [Space]Pause/Resume, [S]earch, [M]ode, [V+]olume Up, [B]ack Volume Down, [Q]uit", COLORS.text_info, COLORS.bg_default)
+    utf8display.print("控制: [N]ext, [P]rev, [Space]Pause/Resume, [S]earch, [M]ode, [V+]olume Up, [B]ack Volume Down, [Q]uit", COLORS.text_info, COLORS.bg_default)
     term.setCursorPos(1, controlY + 1)
-    utf8display.print({success=true, startX=1, startY=controlY + 1, endX=1, endY=controlY + 1, charCount=0, fontHeight=utf8display.getFontHeight()}, "当前模式: " .. playModeNames[playMode], COLORS.text_info, COLORS.bg_default)
+    utf8display.print("当前模式: " .. playModeNames[playMode], COLORS.text_info, COLORS.bg_default)
     term.setCursorPos(1, controlY + 2)
-    utf8display.print({success=true, startX=1, startY=controlY + 2, endX=1, endY=controlY + 2, charCount=0, fontHeight=utf8display.getFontHeight()}, "当前音量: " .. volume .. "%", COLORS.text_info, COLORS.bg_default)
+    utf8display.print("当前音量: " .. volume .. "%", COLORS.text_info, COLORS.bg_default)
 end
 
 
@@ -271,7 +272,7 @@ while true do
         if key == keys.q then -- 退出
             if playbackThread then coroutine.close(playbackThread) end
             term.clear()
-            utf8display.print({success=true, startX=1, startY=1, endX=1, endY=1, charCount=0, fontHeight=utf8display.getFontHeight()}, "再见!", COLORS.text_info, COLORS.bg_default)
+            utf8display.print("再见!", COLORS.text_info, COLORS.bg_default)
             sleep(1)
             break
         elseif key == keys.n then -- 下一首
@@ -282,26 +283,26 @@ while true do
             togglePauseResume()
         elseif key == keys.s then -- 搜索
             term.clear()
-            utf8display.print({success=true, startX=1, startY=1, endX=1, endY=1, charCount=0, fontHeight=utf8display.getFontHeight()}, "请输入搜索关键词: ", COLORS.text_info, COLORS.bg_default)
+            utf8display.print("请输入搜索关键词: ", COLORS.text_info, COLORS.bg_default)
             local keyword = io.read("*line")
             if keyword and #keyword:gsub("%s+", "") > 0 then
                 searchMusic(keyword)
             else
-                utf8display.print({success=true, startX=1, startY=2, endX=1, endY=2, charCount=0, fontHeight=utf8display.getFontHeight()}, "无效的搜索词。", COLORS.text_error, COLORS.bg_default)
+                utf8display.print("无效的搜索词。", COLORS.text_error, COLORS.bg_default)
                 sleep(1)
             end
         elseif key == keys.m then -- 切换播放模式
             playMode = playMode + 1
             if playMode > 3 then playMode = 1 end
-            utf8display.print({success=true, startX=1, startY=20, endX=1, endY=20, charCount=0, fontHeight=utf8display.getFontHeight()}, "播放模式已切换为: " .. playModeNames[playMode], COLORS.text_highlight, COLORS.bg_default) -- 简单提示
+            utf8display.print("播放模式已切换为: " .. playModeNames[playMode], COLORS.text_highlight, COLORS.bg_default) -- 简单提示
             sleep(1)
         elseif key == keys.v then -- 音量增加
             volume = math.min(100, volume + 10)
-            utf8display.print({success=true, startX=1, startY=20, endX=1, endY=20, charCount=0, fontHeight=utf8display.getFontHeight()}, "音量已调整为: " .. volume .. "%", COLORS.text_highlight, COLORS.bg_default)
+            utf8display.print("音量已调整为: " .. volume .. "%", COLORS.text_highlight, COLORS.bg_default)
             sleep(1)
         elseif key == keys.b then -- 音量减少
             volume = math.max(0, volume - 10)
-            utf8display.print({success=true, startX=1, startY=20, endX=1, endY=20, charCount=0, fontHeight=utf8display.getFontHeight()}, "音量已调整为: " .. volume .. "%", COLORS.text_highlight, COLORS.bg_default)
+            utf8display.print("音量已调整为: " .. volume .. "%", COLORS.text_highlight, COLORS.bg_default)
             sleep(1)
         end
     end
